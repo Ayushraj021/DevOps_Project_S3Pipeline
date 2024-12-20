@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+
+    - name: task1
+      copy:
+        src: /var/lib/jenkins/workspace/pipeline/target/NETFLIX-1.2.2.war
+        dest: /root/tomcat/webapps

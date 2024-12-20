@@ -1,0 +1,20 @@
+node {
+    stage('code') {
+        git 'https://github.com/Ayushraj021/jenkins-java-project.git'
+    }
+    stage('build') {
+        sh 'mvn compile'
+    }
+    stage('test') {
+        sh 'mvn test'
+    }
+    stage('artifact') {
+        sh 'mvn package'
+    }
+    stage('s3') {
+        s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'netflixartifact0099', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'ap-south-1', showDirectlyInBrowser: false, sourceFile: 'target/NETFLIX-1.2.2.war', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 's3-bucket', userMetadata: []
+    }
+    stage('deploy') {
+        ansiblePlaybook credentialsId: 'ansible', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/hosts', limit: '$server', playbook: '/etc/ansible/deploy.yml', vaultTmpPath: ''
+    }
+}
